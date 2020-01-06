@@ -64,7 +64,7 @@ class StudentController {
         .when('email', (email, field) =>
           email ? field.required().oneOf([Yup.ref('email')]) : field
         ),
-      date_of_birth: Yup.date().required(),
+      date_of_birth: Yup.date(),
       peso: Yup.number().positive(),
       altura: Yup.number().positive(),
     });
@@ -72,7 +72,35 @@ class StudentController {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
-    return res.json({ message: 'Update one Student' });
+
+    const email = req.body;
+
+    const student = await Student.findByPk(req.params.id);
+
+    if (email !== student.email) {
+      const userExists = await Student.findOne({
+        where: {
+          email: req.body.email,
+        },
+      });
+
+      if (userExists) {
+        return res.status(400).json({ error: 'User already exists.' });
+      }
+    }
+
+    const { id, name, date_of_birth, peso, altura } = await student.update(
+      req.body
+    );
+
+    return res.json({
+      id,
+      name,
+      email,
+      date_of_birth,
+      peso,
+      altura,
+    });
   }
 }
 
