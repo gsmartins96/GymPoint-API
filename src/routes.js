@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
+import StudentController from './app/controllers/StudentController';
 import authMiddleware from './app/middleware/auth';
 
 const routes = new Router();
@@ -12,6 +13,8 @@ routes.use(authMiddleware);
 // A partir daqui, as rotas só são acessadas se tiver um user autenticado
 // userId disponível para todas as rodas abaixo
 
-routes.put('/update', UserController.update);
+routes.put('/users', UserController.update);
+routes.post('/students', StudentController.store);
+routes.put('/students', StudentController.update);
 
 export default routes;
