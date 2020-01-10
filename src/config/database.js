@@ -1,8 +1,8 @@
-require('dotenv/config');
+// require('dotenv/config');
 
 module.exports = {
   dialect: 'postgres',
-  host: process.env.DB_HOST,
+  host: 'localhost',
   username: 'gabrielmartins',
   database: 'gympoint',
   define: {
