@@ -72,7 +72,7 @@ class StudentController {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
-
+    // FAZER VERIFICAÇÃO SE ESSE ANTIGO EMAIL É DE FATO O EMAIL DO USUARIO
     const email = req.body;
 
     const student = await Student.findByPk(req.params.id);
