@@ -2,6 +2,7 @@ import { Router } from 'express';
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import StudentController from './app/controllers/StudentController';
+import PlansController from './app/controllers/PlansController';
 import authMiddleware from './app/middleware/auth';
 
 const routes = new Router();
@@ -14,7 +15,12 @@ routes.use(authMiddleware);
 // userId disponível para todas as rodas abaixo
 
 routes.put('/users', UserController.update);
+
 routes.post('/students', StudentController.store);
 routes.put('/students/:id', StudentController.update);
+
+routes.get('/plans', PlansController.index);
+routes.post('/plans', PlansController.store);
+routes.put('/plans/:id', PlansController.update);
 
 export default routes;
