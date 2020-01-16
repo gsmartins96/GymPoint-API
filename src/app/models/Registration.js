@@ -6,7 +6,7 @@ class Registration extends Model {
       {
         start_date: Sequelize.DATEONLY,
         end_date: Sequelize.DATEONLY,
-        prince: Sequelize.FLOAT,
+        price: Sequelize.FLOAT,
       },
       {
         sequelize,
@@ -18,7 +18,7 @@ class Registration extends Model {
 
   static associate(models) {
     this.belongsTo(models.Student, { foreignKey: 'student_id', as: 'student' });
-    this.belongsTo(models.Plan, { foreignKey: 'plan_id', as: 'plan' });
+    this.belongsTo(models.Plans, { foreignKey: 'plan_id', as: 'plan' });
   }
 }
 

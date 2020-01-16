@@ -1,10 +1,24 @@
-import * as Yup from 'yup';
+// import * as Yup from 'yup';
 import Registration from '../models/Registration';
 
 class RegistrationController {
   async store(req, res) {
-    return res.json({ message: 'Rota para registrar um aluno na academia.' });
+    const {
+      student_id,
+      plan_id,
+      start_date,
+      end_date,
+      price,
+    } = await Registration.create(req.body);
+
+    return res.json({
+      student_id,
+      plan_id,
+      start_date,
+      end_date,
+      price,
+    });
   }
 }
 
-export default RegistrationController();
+export default new RegistrationController();
