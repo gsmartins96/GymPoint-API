@@ -1,5 +1,5 @@
-// import * as Yup from 'yup';
-import { addMonths } from 'date-fns';
+import { addMonths, format, parseISO } from 'date-fns';
+import { pt } from 'date-fns/locale/pt';
 import Registration from '../models/Registration';
 import Student from '../models/Student';
 import Plan from '../models/Plans';
@@ -19,7 +19,17 @@ class RegistrationController {
       price,
     });
 
-    return res.json(userRegistration);
+    const formattedEndDate = format(end_date, "dd'/'MM'/'yyyy", {
+      locale: pt,
+    });
+    const formattedStartDate = format(parseISO(start_date), "dd'/'MM'/'yyyy", {
+      locale: pt,
+    });
+
+    return res.json({
+      message: `Data de início informada: ${formattedStartDate} Plano selecionado: ${plan.title} Data de término calculada: ${formattedEndDate} (${plan.duration} meses depois do início) Preço calculado: R$${price}`,
+      userRegistration,
+    });
   }
 
   async index(req, res) {
