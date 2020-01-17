@@ -31,7 +31,13 @@ class RegistrationController {
     await Mail.sendMail({
       to: `${student.name} <${student.email}>`,
       subject: 'Bem vindo ao GymPoint!',
-      text: 'Treine pesado pra ficar grande porra!',
+      template: 'registration',
+      context: {
+        user: student.name,
+        plan: plan.title,
+        date: formattedEndDate,
+        total_price: price,
+      },
     });
 
     return res.json({
