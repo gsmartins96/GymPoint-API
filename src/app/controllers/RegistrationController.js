@@ -3,11 +3,13 @@ import { pt } from 'date-fns/locale/pt';
 import Registration from '../models/Registration';
 import Student from '../models/Student';
 import Plan from '../models/Plans';
+import Mail from '../../lib/Mail';
 
 class RegistrationController {
   async store(req, res) {
     const { student_id, plan_id, start_date } = req.body;
     const plan = await Plan.findByPk(req.body.plan_id);
+    const student = await Student.findByPk(req.body.student_id);
     const end_date = addMonths(new Date(start_date), plan.duration);
     const price = plan.price * 3;
 
@@ -24,6 +26,12 @@ class RegistrationController {
     });
     const formattedStartDate = format(parseISO(start_date), "dd'/'MM'/'yyyy", {
       locale: pt,
+    });
+
+    await Mail.sendMail({
+      to: `${student.name} <${student.email}>`,
+      subject: 'Bem vindo ao GymPoint!',
+      text: 'Treine pesado pra ficar grande porra!',
     });
 
     return res.json({
