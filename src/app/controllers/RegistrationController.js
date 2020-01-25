@@ -125,6 +125,26 @@ class RegistrationController {
       price,
     });
   }
+
+  async delete(req, res) {
+    const registration = await Registration.findByPk(req.params.id);
+    const student = await Student.findByPk(registration.student_id);
+
+    registration.destroy();
+
+    await Mail.sendMail({
+      to: `${student.name} <${student.email}>`,
+      subject: 'Cancelamento de Matricula',
+      template: 'cancelled_registration',
+      context: {
+        user: student.name,
+      },
+    });
+
+    return res.json({
+      message: 'Sua matricula foi cancelada. Que pena, espero que volta.',
+    });
+  }
 }
 
 export default new RegistrationController();
