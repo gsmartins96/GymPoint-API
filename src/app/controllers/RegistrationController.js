@@ -3,7 +3,10 @@ import { pt } from 'date-fns/locale/pt';
 import Registration from '../models/Registration';
 import Student from '../models/Student';
 import Plan from '../models/Plans';
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
+import CancellationMail from '../jobs/CancellationMail';
+import UpdateMail from '../jobs/UpdateMail';
+import RegistrationMail from '../jobs/RegistrationMail';
 
 class RegistrationController {
   async store(req, res) {
@@ -38,16 +41,11 @@ class RegistrationController {
       locale: pt,
     });
 
-    await Mail.sendMail({
-      to: `${student.name} <${student.email}>`,
-      subject: 'Bem vindo ao GymPoint!',
-      template: 'registration',
-      context: {
-        user: student.name,
-        plan: plan.title,
-        date: formattedEndDate,
-        total_price: price,
-      },
+    await Queue.add(RegistrationMail.key, {
+      student,
+      plan,
+      formattedEndDate,
+      price,
     });
 
     return res.json({
@@ -107,16 +105,11 @@ class RegistrationController {
       locale: pt,
     });
 
-    await Mail.sendMail({
-      to: `${student.name} <${student.email}>`,
-      subject: 'Atualização de Matricula no GymPoint',
-      template: 'update_registration',
-      context: {
-        user: student.name,
-        plan: plan.title,
-        date: formattedEndDate,
-        total_price: price,
-      },
+    await Queue.add(UpdateMail.key, {
+      student,
+      plan,
+      formattedEndDate,
+      price,
     });
 
     return res.json({
@@ -131,14 +124,8 @@ class RegistrationController {
     const student = await Student.findByPk(registration.student_id);
 
     registration.destroy();
-
-    await Mail.sendMail({
-      to: `${student.name} <${student.email}>`,
-      subject: 'Cancelamento de Matricula',
-      template: 'cancelled_registration',
-      context: {
-        user: student.name,
-      },
+    await Queue.add(CancellationMail.key, {
+      student,
     });
 
     return res.json({
